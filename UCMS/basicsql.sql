@@ -53,7 +53,6 @@ CREATE TABLE complaint
     CONSTRAINT complaint_ID_pk PRIMARY KEY (complaint_ID),
     CONSTRAINT lodger_ID_fk FOREIGN KEY (lodger_ID) REFERENCES complaint_users(user_ID)
 );
-drop table if exists respondent cascade;
 CREATE TABLE respondent
 (
     respondent_ID int not null,
@@ -66,7 +65,6 @@ CREATE TABLE respondent
     CONSTRAINT Assigned_complaint FOREIGN KEY (assigned_complaint) REFERENCES
 	complaint(complaint_ID)
 );
-drop table if exists admin;
 CREATE TABLE admin
 (
     admin_ID int not null,
@@ -79,7 +77,6 @@ CREATE TABLE admin
     CONSTRAINT respondent_email_fk FOREIGN KEY (respondent_email) REFERENCES
 	respondent(respondent_email)
 );
-drop table if exists resolves;
 CREATE TABLE resolves
 (
     res_ID int not null,
