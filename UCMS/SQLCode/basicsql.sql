@@ -15,16 +15,17 @@ CREATE TABLE student
     faculty varchar(20) not null unique,
     deg_program varchar(20) not null,
     hostel int not null,
-    room int not null,
+    room_no int not null,
 CONSTRAINT stu_ID_pk PRIMARY KEY (stu_ID),
     CONSTRAINT stu_ID_fk FOREIGN KEY (stu_ID) REFERENCES complaint_users(user_ID)
 );
+
 CREATE TABLE faculty_member
 (
     faculty_ID int not null,
     faculty varchar(20) not null,
     occupation varchar(20) not null,
-    office text,
+    office_no text,
 
     CONSTRAINT faculty_ID_pk PRIMARY KEY (faculty_ID),
     CONSTRAINT faculty_ID_fk FOREIGN KEY (faculty_ID) REFERENCES complaint_users(user_ID)
@@ -33,11 +34,11 @@ CREATE TABLE faculty_member
 CREATE TABLE workers
 (
     workers_ID int not null,
-    faculty varchar(20) not null,
-    hostel text,
+	hostel_no text,
     service varchar(20) not null,
-
-    CONSTRAINT labourer_ID_pk PRIMARY KEY (workers_ID),
+    faculty varchar(20) not null,
+   
+    CONSTRAINT workers_ID_pk PRIMARY KEY (workers_ID),
     CONSTRAINT workers_ID_fk FOREIGN KEY (workers_ID) REFERENCES complaint_users(user_ID)
 );
 CREATE TABLE complaint
@@ -52,31 +53,33 @@ CREATE TABLE complaint
     CONSTRAINT complaint_ID_pk PRIMARY KEY (complaint_ID),
     CONSTRAINT lodger_ID_fk FOREIGN KEY (lodger_ID) REFERENCES complaint_users(user_ID)
 );
-
+drop table if exists respondent cascade;
 CREATE TABLE respondent
 (
     respondent_ID int not null,
-    respondent_email text not null,
+    respondent_email text not null unique,
     respondent_password text not null,
     respondent_name varchar(20) not null,
-    assigned_complaint int not null,
-
-    CONSTRAINT respondent_ID_name_pk PRIMARY KEY (respondent_ID, assigned_complaint),
-    CONSTRAINT assigned_complaint FOREIGN KEY (assigned_complaint) REFERENCES complaint(complaint_ID)
+	assigned_complaint int not null,
+	
+    CONSTRAINT respondent_ID_name_pk PRIMARY KEY (respondent_ID),
+    CONSTRAINT Assigned_complaint FOREIGN KEY (assigned_complaint) REFERENCES
+	complaint(complaint_ID)
 );
-
+drop table if exists admin;
 CREATE TABLE admin
 (
     admin_ID int not null,
     admin_email text not null,
     admin_password text not null,
     complaint_ID int not null,
-    res_ID int not null,
+    respondent_email text not null ,
 
     CONSTRAINT admin_ID_complaint_ID_pk PRIMARY KEY (admin_ID, complaint_ID),
-    CONSTRAINT respondent_ID_fk FOREIGN KEY (res_ID) REFERENCES respondent(respondent_ID)
+    CONSTRAINT respondent_email_fk FOREIGN KEY (respondent_email) REFERENCES
+	respondent(respondent_email)
 );
-
+drop table if exists resolves;
 CREATE TABLE resolves
 (
     res_ID int not null,
