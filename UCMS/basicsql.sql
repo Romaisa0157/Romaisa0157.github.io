@@ -131,5 +131,12 @@ VALUES
 (126, 'Hostel 10', 'Maintenance')
 (145, 'Hostel 11', 'Security')
 ;
+INSERT INTO complaint (complaint_ID, issue_date, resolve_date, complaint_type, description, lodger_ID)
+VALUES
+(1, '2022-04-01', '2022-04-03', 'Hostel', 'Broken light fixture', 2021234)
+(2, '2022-05-15', '2022-05-17', 'Medical Centre', 'N/A', 3)
+(3, '2022-06-20', NULL, 'Mess', 'N/A', 1);
+
+
 
 
