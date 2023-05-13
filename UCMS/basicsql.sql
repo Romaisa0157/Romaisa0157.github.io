@@ -83,8 +83,8 @@ CREATE TABLE admin
     respondent_email text not null ,
 
     CONSTRAINT admin_complaint_fk FOREIGN KEY (complaint_ID) REFERENCES complaint(complaint_ID),
-    CONSTRAINT admin_respondent_fk  FOREIGN KEY (respondent_email) REFERENCES
-	respondent(respondent_email)
+    CONSTRAINT admin_respondent_fk  FOREIGN KEY (respondent_ID) REFERENCES
+	respondent(respondent_ID)
 );
 
 -- Table for file attachments
@@ -180,11 +180,11 @@ VALUES
     (3, 'respondent3@example.com', 'password789', 'Respondent 3', 14);
 
 -- Insert data into the admin table
-INSERT INTO admin (admin_ID,admin_email, admin_password, complaint_ID, respondent_email)
+INSERT INTO admin (admin_ID,admin_email, admin_password, complaint_ID, respondent_ID)
 VALUES
-    (1001,'admin1@giki.edu.pk', 'adminpassword1', 12, 'respondent1@example.com'),
-    (1002,'admin2@giki.edu.pk', 'adminpassword2', 13, 'respondent2@example.com'),
-    (1003,'admin3@giki.edu.pk', 'adminpassword3', 14, 'respondent3@example.com');
+    (1001,'admin1@giki.edu.pk', 'adminpassword1', 12, 1),
+    (1002,'admin2@giki.edu.pk', 'adminpassword2', 13, 2),
+    (1003,'admin3@giki.edu.pk', 'adminpassword3', 14, 3);
 	
 INSERT INTO resolves(res_ID, complaint_ID, status)
 VALUES
