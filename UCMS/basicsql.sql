@@ -80,8 +80,8 @@ CREATE TABLE admin
     admin_email TEXT NOT NULL,
     admin_password TEXT NOT NULL,
     complaint_ID int not null,
-    respondent_email text not null ,
-
+	respondent_ID INTEGER NOT NULL,
+	
     CONSTRAINT admin_complaint_fk FOREIGN KEY (complaint_ID) REFERENCES complaint(complaint_ID),
     CONSTRAINT admin_respondent_fk  FOREIGN KEY (respondent_ID) REFERENCES
 	respondent(respondent_ID)
