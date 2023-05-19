@@ -1,5 +1,3 @@
---Table of the user that will be lodging the complaint
-DROP TABLE IF EXISTS complaint_users;
 CREATE TABLE complaint_users
 (
     user_ID SERIAL PRIMARY KEY,
@@ -9,8 +7,6 @@ CREATE TABLE complaint_users
     role VARCHAR(50) NOT NULL
 );
 
---user can be student
-DROP TABLE IF EXISTS student;
 CREATE TABLE student
 (
     stu_ID SERIAL PRIMARY KEY REFERENCES complaint_users(user_ID),
@@ -22,8 +18,6 @@ CREATE TABLE student
     CONSTRAINT student_user_fk FOREIGN KEY (stu_ID) REFERENCES complaint_users(user_ID)
 );
 
---user can be faculty member
-DROP TABLE IF EXISTS faculty_member;
 CREATE TABLE faculty_member
 (
    faculty_ID SERIAL PRIMARY KEY,
@@ -34,8 +28,6 @@ CREATE TABLE faculty_member
     CONSTRAINT faculty_ID_fk FOREIGN KEY (faculty_ID) REFERENCES complaint_users(user_ID)
 );
 
---user can be any worker
-DROP TABLE IF EXISTS workers;
 CREATE TABLE workers
 (
     workers_ID SERIAL PRIMARY KEY,
@@ -45,8 +37,6 @@ CREATE TABLE workers
     CONSTRAINT workers_ID_fk FOREIGN KEY (workers_ID) REFERENCES complaint_users(user_ID)
 );
 
---table for complaint information
-DROP TABLE IF EXISTS complaint;
 CREATE TABLE complaint
 (
     complaint_ID SERIAL PRIMARY KEY,
@@ -59,8 +49,6 @@ CREATE TABLE complaint
     CONSTRAINT complaint_lodger_fk FOREIGN KEY (lodger_ID) REFERENCES complaint_users(user_ID)
 );
 
---table to store information of the respondant
-DROP TABLE IF EXISTS respondent CASCADE;
 CREATE TABLE respondent
 (
     respondent_ID INTEGER NOT NULL,
@@ -72,8 +60,6 @@ CREATE TABLE respondent
     CONSTRAINT respondent_assigned_complaint_fk FOREIGN KEY (assigned_complaint) REFERENCES complaint(complaint_ID)
 );
 
---admin will be managing the complaints
-DROP TABLE IF EXISTS admin;
 CREATE TABLE admin
 (
     admin_ID SERIAL PRIMARY KEY,
@@ -87,7 +73,6 @@ CREATE TABLE admin
 	respondent(respondent_ID)
 );
 
--- Table for file attachments
 CREATE TABLE attachments (
     attachment_ID SERIAL PRIMARY KEY,
     complaint_ID INTEGER REFERENCES complaint(complaint_ID),
@@ -95,7 +80,6 @@ CREATE TABLE attachments (
     CONSTRAINT attachment_complaint_fk FOREIGN KEY (complaint_ID) REFERENCES complaint(complaint_ID)
 );
 
--- Table for complaint history and audit trails
 CREATE TABLE complaint_history (
     history_ID SERIAL PRIMARY KEY,
     complaint_ID INTEGER REFERENCES complaint(complaint_ID),
@@ -106,7 +90,6 @@ CREATE TABLE complaint_history (
     CONSTRAINT history_user_fk FOREIGN KEY (user_ID) REFERENCES complaint_users(user_ID)
 );
 
---to get the status of the lodged complaints
 CREATE TABLE resolves
 (
     res_ID SERIAL NOT NULL,
