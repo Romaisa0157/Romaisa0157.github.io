@@ -24,34 +24,38 @@ class Student(db.Model):
     deg_program = db.Column(db.String(255), nullable=False)
     hostel = db.Column(db.Integer, nullable=False)
     room_no = db.Column(db.Integer, nullable=False)
-  #  stu_user = db.relationship('User', backref='student', uselist=False)
     __table_args__ = (
         db.ForeignKeyConstraint([stu_ID],['complaint_users.user_id']),
     )
-# class FacultyMember(db.Model):
-#     __tablename__ = 'faculty_member'
-#     faculty_ID = db.Column(db.Integer, primary_key=True)
-#     faculty = db.Column(db.String(100), nullable=False)
-#     occupation = db.Column(db.String(100), nullable=False)
-#     office_no = db.Column(db.Text)
-#     faculty_user = db.relationship('User', backref='faculty_member', uselist=False)
+class FacultyMember(db.Model):
+    __tablename__ = 'faculty_member'
+    faculty_ID = db.Column(db.Integer, primary_key=True)
+    faculty = db.Column(db.String(100), nullable=False)
+    occupation = db.Column(db.String(100), nullable=False)
+    office_no = db.Column(db.Text)
+    __table_args__ = (
+        db.ForeignKeyConstraint([faculty_ID],['complaint_users.user_id']),
+    )
+class Workers(db.Model):
+    __tablename__ = 'workers'
+    workers_ID = db.Column(db.Integer, primary_key=True)
+    hostel_no = db.Column(db.Text)
+    service = db.Column(db.String(20), nullable=False)
+    faculty = db.Column(db.String(20))
+    __table_args__ = (
+        db.ForeignKeyConstraint([workers_ID],['complaint_users.user_id']),
+    )
 
-# class Workers(db.Model):
-#     __tablename__ = 'workers'
-#     workers_ID = db.Column(db.Integer, primary_key=True)
-#     hostel_no = db.Column(db.Text)
-#     service = db.Column(db.String(20), nullable=False)
-#     faculty = db.Column(db.String(20))
-#     worker_user = db.relationship('User', backref='workers', uselist=False)
-
-
-# class Respondent(db.Model):
-#     __tablename__ = 'respondent'
-#     respondent_ID = db.Column(db.Integer, primary_key=True)
-#     respondent_email = db.Column(db.Text, nullable=False, unique=True)
-#     respondent_password = db.Column(db.Text, nullable=False)
-#     respondent_name = db.Column(db.String(20), nullable=False)
-#     assigned_complaint = db.Column(db.Integer, db.ForeignKey('complaint.complaint_ID'), nullable=False)
+class Respondent(db.Model):
+    __tablename__ = 'respondent'
+    respondent_ID = db.Column(db.Integer, primary_key=True)
+    respondent_email = db.Column(db.Text, nullable=False, unique=True)
+    respondent_password = db.Column(db.Text, nullable=False)
+    respondent_name = db.Column(db.String(20), nullable=False)
+    assigned_complaint = db.Column(db.Integer, nullable=False)
+    __table_args__ = (
+        db.ForeignKeyConstraint([assigned_complaint],['complaint.complaint_ID']),
+    )
 
 class Admin(db.Model):
     __tablename__ = 'admin'
@@ -74,7 +78,7 @@ class Admin(db.Model):
 
 @app.route("/")
 def home():
-    return render_template("home1.html")
+    return render_template("index.html")
     
 
 @app.route("/complaint")
@@ -148,25 +152,6 @@ def login():
     else:
         return redirect("/display")
 
-
-
-# @app.route("/login",methods = ['POST'])
-# def login():
-#     session['email']= request.form.get('email')
-#     session['password']= request.form.get('password')
-
-#     query = text("Select * from complaint_users where user_email = (:param);")
-#     param1 = {"param":session['email']}
-#     user_login = db.session.execute(query,param1)
-#     user = user_login.fetchone()
-    
-#     if user is not None:
-#         if user['user_email'] == session['email'] and user['user_password'] == session['password']:
-#             return render_template("complaint.html",email = user['user_email'])
-#         else:
-#             return redirect("/display")         
-#     else: 
-#         return redirect("/display")
    
 
 @app.route("/complaint_portal")
@@ -241,30 +226,6 @@ def respondent_display():
     return render_template("respondent.html")
 
 
-##################
-# @app.route("/respondent", methods=['POST'])
-# def respondent():
-#     session['email'] = request.form.get('r_email')
-#     session['password'] = request.form.get('r_password')
-
-#     query = text("SELECT * FROM respondent WHERE respondent_email = :email;")
-#     params = {"email": session['email']}
-#     result = db.session.execute(query, params)
-#     respondent = result.fetchone()
-
-#     if respondent is not None:
-#         if respondent['respondent_email'] == session['email'] and respondent['respondent_password'] == session['password']:
-#             query1 = text("SELECT * FROM complaint c INNER JOIN admin_to_respondent r ON c.complaint_ID = r.assigned_complaint_id WHERE r.respondent_id = :respondent_id;")
-#             params1 = {"respondent_id": respondent['respondent_id']}
-#             complaints_result = db.session.execute(query1, params1)
-#             complaints = complaints_result.fetchall()
-
-#             return render_template('respondent_portal.html', complaints=complaints, respondent=respondent)
-#         else:
-#             return redirect("/respondent_display")
-#     else:
-#         return redirect("/respondent_display")
-#################
 @app.route("/respondent", methods=['POST'])
 def respondent():
     session['email'] = request.form.get('r_email')
@@ -277,7 +238,7 @@ def respondent():
 
     if respondent is not None:
         if respondent['respondent_email'] == session['email'] and respondent['respondent_password'] == session['password']:
-            query1 = text("SELECT * FROM complaint c INNER JOIN admin_to_respondent r ON c.complaint_ID = r.assigned_complaint_id WHERE r.respondent_id =(select respondent_id from respondent where assigned_complaint=r.assigned_complaint_id);")
+            query1 = text("SELECT * FROM complaint c INNER JOIN admin_to_respondent r ON c.complaint_ID = r.assigned_complaint_id WHERE r.respondent_id = :respondent_id;")
             params1 = {"respondent_id": respondent['respondent_id']}
             complaints_result = db.session.execute(query1, params1)
             complaints = complaints_result.fetchall()
@@ -289,33 +250,6 @@ def respondent():
         return redirect("/respondent_display")
 
 
-
-# @app.route("/respondent_dashboard")
-# def respondent_dash():
-#     return render_template("respondent_portal.html")
-
-# @app.route("/respondent_portal", methods=['POST'])
-# def respondent_portal():
-#     email = request.form.get('r_email')
-#     password = request.form.get('r_password')
-
-#     # Compare the credentials with the database records
-#     query = text("SELECT * FROM respondent WHERE respondent_email = :email;")
-#     params = {"email": email}
-#     result = db.session.execute(query, params)
-#     respondent = result.fetchone()
-
-#     if respondent is not None and respondent['respondent_password'] == password:
-#         # Retrieve complaints data from the database
-#         query1 = text("SELECT * FROM complaint")
-#         complaints_result = db.session.execute(query1)
-#         complaints = complaints_result.fetchall()
-
-#         assigned_complaints = [complaint for complaint in complaints if complaint[''] == respondent['assigned_complaint']]
-
-#         return render_template('respondent_portal.html', complaints=assigned_complaints, respondent=respondent)
-#     else:
-#         return redirect("/respondent_display")
 
 if __name__ == '__main__':
     app.run(debug=True)
